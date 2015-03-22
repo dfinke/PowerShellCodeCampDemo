@@ -1,0 +1,4 @@
+http://blogs.msdn.com/b/powershell/rss.aspx
+http://weblogs.asp.net/scottgu/rss.aspx
+http://feeds.feedburner.com/ScottHanselman
+http://feeds.feedburner.com/DevelopmentInABlink

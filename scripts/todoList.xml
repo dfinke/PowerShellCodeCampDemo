@@ -1,0 +1,5 @@
+<todo name="housework">
+    <task priority="high">Clean the house.</task>
+    <task priority="medium">Wash the dishes.</task>
+    <task priority="medium">Buy more soap.</task>
+</todo>

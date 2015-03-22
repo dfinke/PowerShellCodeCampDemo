@@ -1,0 +1,4 @@
+http://ogdi.cloudapp.net/v1/dc
+http://odata.msteched.com/sessions.svc/
+http://odata.netflix.com/Catalog
+http://services.odata.org/Northwind/Northwind.svc/

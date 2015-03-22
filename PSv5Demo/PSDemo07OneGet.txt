@@ -1,0 +1,29 @@
+# OneGet is NOT a package manager
+# It IS a package manager aggregator
+
+# PowerShellGet is PowerShell Module Package Manager
+
+Find-Module | Out-GridView
+
+find-module gist*
+
+find-module gist* | Install-Module
+
+# OneGet
+
+Get-PackageProvider
+
+Find-Package zoomit
+
+Find-Package -ProviderName Gist -Source dfinke | Out-GridView
+
+Find-Package cfsbuddy -Source dfinke
+
+$DestinationPath = "$env:LOCALAPPDATA\OneGet\Gist"
+del $DestinationPath -Recurse -Force -erroraction ignore
+Find-Package cfsbud -Source dfinke | Install-Package
+cd $DestinationPath
+
+dir
+
+.\CFSBuddy.ps1

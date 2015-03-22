@@ -1,0 +1,181 @@
+# Printing
+# Don't need a print statement 
+# Variables 'know how' to print themselves
+# their properties
+# and iterate
+"Hello World"
+
+# Access the .Net Framework
+# Calling a static method
+[System.Math]::Pow(2, 3)
+
+# Range Command
+1..10
+
+# Variables
+$a = "Hello"
+
+# Print Variables
+$a
+
+# Reflection at the Command Line
+$a.GetType()
+
+# arrays
+# Create and empty array
+$a = @()
+$a.GetType()
+
+# Create an array with values
+$a = 1,2,3
+$a.GetType()
+$a
+
+# Heterogeneous arrays
+$a = 1,2,3,"a"
+$a
+
+# Hash Tables
+$h = @{}
+$h.GetType()
+$h = @{a=1;b=2}
+$h
+# dot notation
+$h = @{a=@{c=1};b=2}
+$h
+$h.a
+# Notice you don't have to cast the member a
+# Think, type, get
+$h.a.c
+
+# Cmdlets are the building blocks of PowerShell
+# Here is one, Get-Process also aliased to ps
+Get-Process
+
+# PowerShell is about discovery 
+# Get-Command, Get-Help and Get-Member
+Get-Command Invoke*
+Get-Command *Item
+
+# Get-Help
+Get-Help Get-Process -Examples
+
+# More reflection at the command line
+$ps = Get-Process
+$ps[0] 
+# PowerShell pipeline
+$ps[0] | Get-Member
+
+#Inject guis into your pipeline Out-GridView
+$ps[0] | Get-Member | Out-GridView
+
+# The game changer, object pipelines
+Get-Process | Where { $_.Handles -gt 700 } | sort pm -desc
+# Multiply each element by 2
+$a = 1..10
+$a | ForEach {$_ * 2}
+
+# only even numbers
+$a = 1..10
+$a | Where {$_ % 2 -eq 0} | ForEach {$_ * 2}
+
+# Working with Xml
+Notepad .\scripts\Products.xml
+
+# Create an XmlDocument using an accelerator
+$xml = [xml] (Get-Content .\scripts\Products.xml)
+$xml.GetType()
+
+# Use dot notation to list the products as objects
+$xml.Products.Product
+
+# Same array of objects formatted as a table
+$xml.Products.Product | Format-Table -Autosize
+
+# How many units are in stock 
+$xml.Products.Product | ForEach {$sum = 0} {$sum += $_.UnitsInStock} {$sum} 
+
+# Work with Xml off the Web
+# Use the New-Object Cmdlet and .NET framework 
+notepad .\scripts\rss.ps1
+
+# run the script
+.\scripts\rss.ps1
+
+# Read and RSS feed
+Invoke-RestMethod http://blogs.msdn.com/b/powershell/atom.aspx | Select Title,Published
+
+# Manage CSV
+$csv = "Name,Age`r`nJohn,10" | ConvertFrom-Csv 
+$csv | format-table -autosize
+
+# Manage JSON
+$json = "{Name:'Tom', Age:20}" | ConvertFrom-Json 
+$json | format-table -autosize
+
+# Manage XML
+$xml = ([xml]"<data><record><Name>Harry</Name><Age>30</Age></record></data>").data.record
+$xml | format-table -autosize
+
+# Combine all three
+$data = $csv,$json,$xml
+$data
+
+# Add up the ages
+$sum=0; $csv,$json,$xml | ForEach {$sum+=$_.age}; $sum
+
+# PowerShell DSLs
+# A Simple Todo List
+gc .\scripts\todolist.xml
+# Let's use the accelerator
+[xml]$list = gc .\scripts\todolist.xml
+$list.todo.task | format-table -autosize
+
+# PowerShell as an alternative syntax to XML
+gc .\scripts\todo.ps1
+# The supporting DSL
+gc .\scripts\todoDSL.ps1
+# Let's run it
+. .\scripts\todoDSL.ps1; .\scripts\todo.ps1 | ft -a
+# Using PowerShell like this allows to do things 
+# you can't do in XML
+gc .\scripts\todoExtra.ps1
+.\scripts\todoExtra.ps1 | ft -a
+# Note, a PSObject is created but you control what is generated
+gc .\scripts\todoDSL.ps1
+
+# Add-Type inline C# - VB | F#
+cat .\scripts\Inline-CSharp.ps1
+.\scripts\Inline-CSharp.ps1
+$obj = New-Object Test
+$obj.GetType()
+$obj | Get-Member
+$obj.Add(5,6)
+1..10 | ForEach { $obj.Add($_,2) }
+
+# Add-Type What if we don't have the source
+#Add-Type -Path .\scripts\CSHarp-PowerShellDemo.dll
+Add-Type -Path .\scripts\DLLs\CSHarp-PowerShellDemo.dll
+$obj = New-Object CSHarp_PowerShellDemo.TestCode
+$obj | Get-Member
+#Use some methods
+$obj.Add(3,4)
+$obj.Multiply(3,4)
+
+# Call methods on your C# object based on the string content
+$methods = "Add", "Divide", "Multiply", "Subtract"
+$methods | ForEach { "Calling the {0} method: {1}" -f $_, $obj.$_.Invoke(2,2) }
+
+# Debug from ISE to VS 2010
+.\CSHarp-PowerShellDemo\CSHarp-PowerShellDemo.sln
+
+# WPF/WPK
+# PowerShell Pack - http://code.msdn.microsoft.com/PowerShellPack
+#
+# Getting Started
+Import-Module .\WPK-Examples\modules\WPK
+
+# Hello World
+cat WPK-Examples\HelloWorld.ps1
+# Run it
+.\WPK-Examples\HelloWorld.ps1

@@ -1,0 +1,43 @@
+<Products>
+	<Product>
+		<ProductId>70</ProductId>
+		<ProductName>Outback Lager</ProductName>
+		<QuantityPerUnit>24 - 355 ml bottles</QuantityPerUnit>
+		<UnitsInStock>15</UnitsInStock>
+		<UnitPrice>15</UnitPrice>
+		<UnitsOnOrder>10</UnitsOnOrder>
+		<ReorderLevel>30</ReorderLevel>
+		<Discontinued>false</Discontinued>
+	</Product>
+		<Product>
+		<ProductId>71</ProductId>
+		<ProductName>Flotemysost</ProductName>
+		<QuantityPerUnit>10 - 500 g pkgs.</QuantityPerUnit>
+		<UnitsInStock>25</UnitsInStock>
+		<UnitPrice>21.5</UnitPrice>
+		<UnitsOnOrder>0</UnitsOnOrder>
+		<ReorderLevel>0</ReorderLevel>
+		<Discontinued>false</Discontinued>
+	</Product>
+		<Product>
+		<ProductId>35</ProductId>
+		<ProductName>Steeleye Stout</ProductName>
+		<QuantityPerUnit>24 - 12 oz bottles</QuantityPerUnit>
+		<UnitsInStock>20</UnitsInStock>
+		<UnitPrice>18</UnitPrice>
+		<UnitsOnOrder>0</UnitsOnOrder>
+		<ReorderLevel>15</ReorderLevel>
+		<Discontinued>false</Discontinued>
+	</Product>
+		<Product>
+		<ProductId>53</ProductId>
+		<ProductName>Perth Pasties</ProductName>
+		<QuantityPerUnit>48 pieces</QuantityPerUnit>
+		<UnitsInStock>0</UnitsInStock>
+		<UnitPrice>32.80</UnitPrice>
+		<UnitsOnOrder>0</UnitsOnOrder>
+		<ReorderLevel>0</ReorderLevel>
+		<Discontinued>true</Discontinued>
+		<DiscontinuedDate>7/4/1996</DiscontinuedDate>
+	</Product>
+</Products>
