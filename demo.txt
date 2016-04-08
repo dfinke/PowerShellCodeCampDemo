@@ -79,6 +79,35 @@ $a | ForEach {$_ * 2}
 $a = 1..10
 $a | Where {$_ % 2 -eq 0} | ForEach {$_ * 2}
 
+# Type accelerators are shortcuts/aliases for a .net type
+[datetime]::now
+
+# They are easy to discover (Must have Powershell Community Extensions Installed)
+[accelerators]::get
+
+# Get Powershell Community Extensions Here
+Start-Process "chrome.exe" "https://pscx.codeplex.com"
+
+# Or this way as well
+$accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+$accelerators::Get
+
+# Create your own
+[accelerators]::add('ping', 'System.Net.NetworkInformation.Ping')
+
+#There it is
+[accelerators]::get['ping']
+
+#Use it
+$ping = New-Object -TypeName ([ping].FullName)
+$ping.Send('127.0.0.1')
+
+#Remove it
+[accelerators]::remove('ping')
+
+#It Gone!
+[accelerators]::get['ping']
+
 # Working with Xml
 Notepad .\scripts\Products.xml
 
@@ -166,7 +195,7 @@ $obj.Multiply(3,4)
 $methods = "Add", "Divide", "Multiply", "Subtract"
 $methods | ForEach { "Calling the {0} method: {1}" -f $_, $obj.$_.Invoke(2,2) }
 
-# Debug from ISE to VS 2010
+# Debug from ISE to Visual Studio
 .\CSHarp-PowerShellDemo\CSHarp-PowerShellDemo.sln
 
 # WPF/WPK
