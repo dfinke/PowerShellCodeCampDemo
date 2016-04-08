@@ -1,0 +1,89 @@
+#Get Azure Powershell
+Start-Process 'chrome.exe' 'http://www.microsoft.com/web/downloads/platform.aspx'
+
+#Either Start Azure Powershell or Import the Azure Module
+Import-Module azure
+
+#Add your azure account
+Add-AzureAccount
+
+#Get your subscriptions
+Get-AzureSubscription
+
+#Set the current subscription
+Set-AzureSubscription -SubscriptionName 'Subscription Name'
+
+#See the VM Image Options
+Get-AzureVMImage | Select ImageFamily -Unique
+
+#Select the Desired Image Family
+$family = 'Desired Image Family'
+
+#Grab the latest version of the image
+$image = Get-AzureVMImage | where { $_.ImageFamily -eq $family } | sort PublishedDate -Descending | select -ExpandProperty ImageName -First 1
+
+#Set a VMName
+$vmname = 'CalculatorVM'
+
+#Set a VMSIze
+$vmSize = 'Basic_A1'
+
+#More on VM Image Sizes
+Start-Process 'chrome.exe' 'https://azure.microsoft.com/documentation/articles/virtual-machines-size-specs'
+
+#Create the new vm  configuration
+$vm = New-AzureVMConfig -Name $vmname -InstanceSize $vmsize -ImageName $image
+
+#Create local administrator creds
+$localCredential = Get-Credential -Message 'Create local administrator credentials'
+
+#add the admin account to the vm
+$vm | Add-AzureProvisioningConfig -Windows -AdminUsername $localCredential.GetNetworkCredential().Username -Password $localCredential.GetNetworkCredential().Password
+
+#Create the web endpoint
+$vm | Add-AzureEndpoint -Name 'HTTP' -LocalPort 80 -PublicPort 80 -Protocol tcp
+
+#Create Web Management endpoint
+$vm | Add-AzureEndpoint -Name 'Web Management' -LocalPort 8172 -PublicPort 8172 -Protocol tcp
+
+#Set Availability Set
+$vm | Set-AzureAvailabilitySet 'Availabiltiy Set Name'
+
+#Set the virtual network name
+$vnetname = 'VNet
+
+#Set the cloud service name
+$cloudService = 'CS'
+
+#Provision the Azure VM
+$provisionedVM = New-AzureVM -ServiceName $cloudService -VMs $vm
+
+#Grab the VM since I cheated
+$provisionedVM = Get-AzureVM | where { $_.Name -eq 'CalculatorVM' }
+$provisionedVM
+
+#Install the cloud certificate
+$WinRMCertificateThumbprint = (Get-AzureVM -ServiceName $cloudService -Name $provisionedVM.Name | Select-Object -ExpandProperty VM).DefaultWinRMCertificateThumbprint
+(Get-AzureCertificate -ServiceName $cloudService -Thumbprint $WinRMCertificateThumbprint -ThumbprintAlgorithm SHA1).Data | Out-File "${env:TEMP}\CloudService.tmp"
+ 
+$X509Object = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 "$env:TEMP\CloudService.tmp"
+$X509Store = New-Object System.Security.Cryptography.X509Certificates.X509Store "Root", "LocalMachine"
+$X509Store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
+$X509Store.Add($X509Object)
+$X509Store.Close()
+ 
+Remove-Item "$env:TEMP\CloudService.tmp"
+
+#Get WinRM URI
+$WinRmUri = Get-AzureWinRMUri -ServiceName $cloudService -Name $provisionedVM.Name
+$WinRmUri
+
+#Connect via WinRM
+Enter-PSSession -ConnectionUri $WinRmUri -Credential $localCredential
+
+#Add IIS and Make this a web server
+Import-Module ServerManager
+Add-WindowsFeature Web-Server,Web-Asp-Net
+
+#Exit the Session
+Exit-PSSession
